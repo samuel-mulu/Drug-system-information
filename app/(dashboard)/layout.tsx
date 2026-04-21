@@ -1,0 +1,99 @@
+'use client';
+
+import { ReactNode, useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+import { useAuthStore } from '@/features/auth/store/auth-store';
+import { authApi } from '@/features/auth/api';
+import { AppShell } from '@/components/layout/app-shell';
+import LoadingState from '@/components/ui/loading-state';
+import { ROUTES, SIDEBAR_NAV_ITEMS, RoleType } from '@/lib/constants';
+
+const ROLE_GUARDS: Array<{ prefix: string; allowedRoles: RoleType[] }> = [
+  { prefix: ROUTES.USERS, allowedRoles: ['SYSTEM_ADMIN'] },
+  { prefix: ROUTES.AUDIT_LOGS, allowedRoles: ['SYSTEM_ADMIN'] },
+  { prefix: ROUTES.MEDICATIONS, allowedRoles: ['SYSTEM_ADMIN', 'MEDICATION_MANAGER'] },
+  { prefix: ROUTES.ANALYTICS, allowedRoles: ['SYSTEM_ADMIN', 'MEDICATION_MANAGER', 'VIEWER'] },
+  { prefix: ROUTES.DASHBOARD, allowedRoles: ['SYSTEM_ADMIN', 'MEDICATION_MANAGER', 'VIEWER'] },
+];
+
+export default function DashboardLayout({ children }: { children: ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const queryClient = useQueryClient();
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const user = useAuthStore((state) => state.user);
+  const hydrate = useAuthStore((state) => state.hydrate);
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const isHydrated = useAuthStore((state) => state.isHydrated);
+  const userRole = user?.role as RoleType | undefined;
+  const currentGuard = ROLE_GUARDS.find(
+    (guard) => pathname === guard.prefix || pathname.startsWith(`${guard.prefix}/`)
+  );
+  const isForbidden = !!currentGuard && !!userRole && !currentGuard.allowedRoles.includes(userRole);
+
+  useEffect(() => {
+    void hydrate();
+  }, [hydrate]);
+
+  useEffect(() => {
+    if (isHydrated && !isLoading && !user) {
+      router.replace('/login');
+    }
+  }, [isHydrated, isLoading, user, router]);
+
+  useEffect(() => {
+    if (isHydrated && !isLoading && isForbidden) {
+      router.replace(ROUTES.DASHBOARD);
+    }
+  }, [isForbidden, isHydrated, isLoading, router]);
+
+  if (!isHydrated || isLoading || !user) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-slate-50">
+        <LoadingState message="Loading..." />
+      </div>
+    );
+  }
+
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
+    } finally {
+      clearAuth();
+      queryClient.clear();
+      router.replace('/login');
+    }
+  };
+
+  if (isForbidden) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-slate-50">
+        <LoadingState message="Redirecting..." />
+      </div>
+    );
+  }
+
+  const filteredNavItems = SIDEBAR_NAV_ITEMS.filter((item) => {
+    if (!item.allowedRoles || !userRole) return false;
+    return item.allowedRoles.includes(userRole);
+  });
+
+  const matchedNavItem = SIDEBAR_NAV_ITEMS.find(
+    (item) =>
+      pathname === item.href ||
+      (item.href !== ROUTES.DASHBOARD && pathname.startsWith(`${item.href}/`))
+  );
+
+  return (
+    <AppShell
+      title={pathname === ROUTES.DASHBOARD ? 'Dashboard' : matchedNavItem?.label || 'Dashboard'}
+      userName={user.fullName}
+      navItems={filteredNavItems.map((item) => ({ href: item.href, label: item.label }))}
+      currentPath={pathname}
+      onLogout={handleLogout}
+    >
+      {children}
+    </AppShell>
+  );
+}
