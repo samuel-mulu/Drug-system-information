@@ -1,3 +1,5 @@
+import { MedicationStatus } from '@/features/medications/types';
+
 export interface DashboardSummary {
   totalMedications: number;
   availableCount: number;
@@ -12,8 +14,8 @@ export interface RecentStatusChange {
     strength: string;
     dosageForm: string;
   };
-  oldStatus: string;
-  newStatus: string;
+  oldStatus: MedicationStatus;
+  newStatus: MedicationStatus;
   reason: string | null;
   changedBy: {
     id: string;
