@@ -55,7 +55,12 @@ export default function LoginPage() {
       toast.success('Welcome back!');
       router.replace('/dashboard');
     } catch (err) {
-      setError(getApiErrorMessage(err, 'Invalid email or password'));
+      setError(
+        getApiErrorMessage(
+          err,
+          'Unable to reach server right now. If Render is waking up, wait a few seconds and try again.'
+        )
+      );
     }
   };
 
