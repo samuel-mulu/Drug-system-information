@@ -71,6 +71,9 @@ export default function LoginPage() {
             <h1 className="mt-5 text-2xl font-bold leading-tight sm:text-3xl">
               {APP_NAME}
             </h1>
+            <p className="mt-2 text-sm text-slate-300">
+              SUHUL HOSPITAL medication and pharmacy information workspace.
+            </p>
            
           </div>
 

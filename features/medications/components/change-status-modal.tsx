@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader } from '../../../components/ui/card';
 import { Input } from '../../../components/ui/input';
 import { getApiErrorMessage } from '../../../lib/api-client';
 import { MedicationStatus } from '../types';
+import { getMedicationStatusLabel } from './medication-status-badge';
 
 interface ChangeStatusModalProps {
   currentStatus: MedicationStatus;
@@ -66,7 +67,7 @@ export default function ChangeStatusModal({ currentStatus, onSubmit, onClose, lo
               <div>
                 <label className="mb-1 block text-sm font-semibold text-slate-700">Current Status</label>
                 <div className="rounded-md bg-slate-100 px-3 py-2 text-sm text-slate-700">
-                  {currentStatus}
+                  {getMedicationStatusLabel(currentStatus)}
                 </div>
               </div>
 
@@ -84,8 +85,8 @@ export default function ChangeStatusModal({ currentStatus, onSubmit, onClose, lo
                   }`}
                 >
                   <option value="AVAILABLE">Available</option>
-                  <option value="OUT_OF_STOCK">Out of Stock</option>
-                  <option value="UNAVAILABLE">Unavailable</option>
+                  <option value="OUT_OF_STOCK">NEAR STOCK OUT</option>
+                  <option value="UNAVAILABLE">STOCK OUT</option>
                 </select>
                 {errors.status && <p className="mt-1 text-xs text-danger">{errors.status}</p>}
               </div>

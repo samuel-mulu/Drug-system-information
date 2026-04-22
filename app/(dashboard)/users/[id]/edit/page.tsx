@@ -12,14 +12,10 @@ import { useLocations } from '../../../../../features/medications/hooks';
 
 export default function EditUserPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { data: userData, isLoading, error } = useUser(params.id);
+  const { data: user, isLoading, error } = useUser(params.id);
   const updateUser = useUpdateUser(params.id);
-  const { data: rolesData, isLoading: rolesLoading } = useRoles();
-  const { data: locationsData, isLoading: locationsLoading } = useLocations();
-
-  const user = userData?.data;
-  const availableRoles = rolesData?.data || [];
-  const availableDepartments = locationsData?.data || [];
+  const { data: availableRoles = [], isLoading: rolesLoading } = useRoles();
+  const { data: availableDepartments = [], isLoading: locationsLoading } = useLocations();
 
   const handleSubmit = async (data: {
     fullName: string;
@@ -28,17 +24,13 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
     roleId: string;
     departmentId?: string;
   }) => {
-    try {
-      await updateUser.mutateAsync({
-        fullName: data.fullName,
-        email: data.email,
-        roleId: data.roleId,
-        departmentId: data.departmentId || null,
-      });
-      router.push(`/users/${params.id}`);
-    } catch (error) {
-      console.error('Failed to update user:', error);
-    }
+    await updateUser.mutateAsync({
+      fullName: data.fullName,
+      email: data.email,
+      roleId: data.roleId,
+      departmentId: data.departmentId || null,
+    });
+    router.push(`/users/${params.id}`);
   };
 
   if (isLoading || rolesLoading || locationsLoading) {

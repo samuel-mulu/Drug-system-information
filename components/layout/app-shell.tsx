@@ -44,9 +44,9 @@ export function AppShell({ title, userName, navItems, currentPath, onLogout, chi
         {!compact && (
           <>
             <h2 className="text-lg font-bold tracking-tight text-white sm:text-xl">
-              Drug Info <span className="text-primary">System</span>
+              SUHUL <span className="text-primary">HOSPITAL</span>
             </h2>
-            <p className="mt-1 text-xs text-slate-400">Mobile-first medication workspace</p>
+            <p className="mt-1 text-xs text-slate-400">Drug Information System</p>
           </>
         )}
       </div>
@@ -110,7 +110,7 @@ export function AppShell({ title, userName, navItems, currentPath, onLogout, chi
           }`}
         >
           <div className="mb-4 flex items-center justify-between">
-            <span className="text-sm font-semibold text-slate-300">Navigation</span>
+            <span className="text-sm font-semibold text-slate-300">SUHUL Navigation</span>
             <button
               type="button"
               onClick={closeMobileNav}

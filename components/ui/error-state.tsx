@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { Button } from './button';
 
 interface ErrorStateProps {
@@ -26,7 +25,7 @@ export default function ErrorState({ title = 'Something went wrong', message, on
         </svg>
       </div>
       <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
-      <p className="mt-2 text-sm text-slate-500 max-w-xs mx-auto">{message}</p>
+      <p className="mt-2 max-w-xs text-sm text-slate-600">{message}</p>
       {onRetry && (
         <div className="mt-6">
           <Button variant="outline" onClick={onRetry}>

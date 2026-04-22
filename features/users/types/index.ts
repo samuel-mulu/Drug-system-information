@@ -6,18 +6,27 @@ export interface Role {
   description?: string;
 }
 
-export interface User {
+export interface UserListItem {
   id: string;
   fullName: string;
   email: string;
   isActive: boolean;
+  departmentId?: string | null;
+  role: Pick<Role, 'name'>;
+  department?: {
+    id: string;
+    name: string;
+  } | null;
+  createdAt: string;
+}
+
+export interface UserDetail extends UserListItem {
   departmentId?: string | null;
   department?: {
     id: string;
     name: string;
   } | null;
   role: Role;
-  createdAt: string;
   updatedAt: string;
 }
 
@@ -45,7 +54,7 @@ export interface GetUsersFilters {
 }
 
 export interface UserListResponse {
-  data: User[];
+  data: UserListItem[];
   meta: {
     page: number;
     limit: number;
@@ -54,5 +63,5 @@ export interface UserListResponse {
 }
 
 export interface UserDetailResponse {
-  data: User;
+  data: UserDetail;
 }

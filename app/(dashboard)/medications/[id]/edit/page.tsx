@@ -13,16 +13,12 @@ export default function EditMedicationPage({ params }: { params: { id: string } 
   const router = useRouter();
   const { data: medication, isLoading } = useMedication(params.id);
   const updateMedication = useUpdateMedication(params.id);
-  const { data: locationsData, isLoading: locationsLoading } = useLocations();
+  const { data: locations = [], isLoading: locationsLoading } = useLocations();
   const { data: currentUser, isLoading: userLoading } = useCurrentUser();
 
   const handleSubmit = async (data: UpdateMedicationInput) => {
-    try {
-      await updateMedication.mutateAsync(data);
-      router.push(`/medications/${params.id}`);
-    } catch (error) {
-      console.error('Failed to update medication:', error);
-    }
+    await updateMedication.mutateAsync(data);
+    router.push(`/medications/${params.id}`);
   };
 
   if (isLoading || locationsLoading || userLoading) {
@@ -48,7 +44,7 @@ export default function EditMedicationPage({ params }: { params: { id: string } 
   return (
     <div>
       <PageHeader
-        title={`Edit ${med.code}`}
+        title={`Edit ${med.genericName}`}
         actions={
           <Button variant="secondary" onClick={() => router.back()}>
             Cancel
@@ -58,20 +54,15 @@ export default function EditMedicationPage({ params }: { params: { id: string } 
       <MedicationForm
         mode="edit"
         initialValues={{
-          code: med.code,
           genericName: med.genericName,
-          brandName: med.brandName,
           strength: med.strength,
           dosageForm: med.dosageForm,
-          category: med.category,
-          manufacturer: med.manufacturer,
-          description: med.description,
           locationId: med.locationId,
           status: med.status,
         }}
         onSubmit={handleSubmit}
         loading={updateMedication.isPending}
-        availableLocations={locationsData?.data || []}
+        availableLocations={locations}
         currentUser={currentUser}
       />
     </div>

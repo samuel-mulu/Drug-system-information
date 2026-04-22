@@ -9,12 +9,33 @@ import { AppShell } from '@/components/layout/app-shell';
 import LoadingState from '@/components/ui/loading-state';
 import { ROUTES, SIDEBAR_NAV_ITEMS, RoleType } from '@/lib/constants';
 
-const ROLE_GUARDS: Array<{ prefix: string; allowedRoles: RoleType[] }> = [
-  { prefix: ROUTES.USERS, allowedRoles: ['SYSTEM_ADMIN'] },
-  { prefix: ROUTES.AUDIT_LOGS, allowedRoles: ['SYSTEM_ADMIN'] },
-  { prefix: ROUTES.MEDICATIONS, allowedRoles: ['SYSTEM_ADMIN', 'MEDICATION_MANAGER'] },
-  { prefix: ROUTES.ANALYTICS, allowedRoles: ['SYSTEM_ADMIN', 'MEDICATION_MANAGER', 'VIEWER'] },
-  { prefix: ROUTES.DASHBOARD, allowedRoles: ['SYSTEM_ADMIN', 'MEDICATION_MANAGER', 'VIEWER'] },
+const ROLE_GUARDS: Array<{ allowedRoles: RoleType[]; matches: (pathname: string) => boolean }> = [
+  {
+    matches: (pathname) => pathname === ROUTES.USERS || pathname.startsWith(`${ROUTES.USERS}/`),
+    allowedRoles: ['SYSTEM_ADMIN'],
+  },
+  {
+    matches: (pathname) => pathname === ROUTES.AUDIT_LOGS || pathname.startsWith(`${ROUTES.AUDIT_LOGS}/`),
+    allowedRoles: ['SYSTEM_ADMIN'],
+  },
+  {
+    matches: (pathname) =>
+      pathname === `${ROUTES.MEDICATIONS}/new` || /^\/medications\/[^/]+\/edit$/.test(pathname),
+    allowedRoles: ['SYSTEM_ADMIN', 'MEDICATION_MANAGER'],
+  },
+  {
+    matches: (pathname) =>
+      pathname === ROUTES.MEDICATIONS || /^\/medications\/[^/]+$/.test(pathname),
+    allowedRoles: ['SYSTEM_ADMIN', 'MEDICATION_MANAGER', 'VIEWER'],
+  },
+  {
+    matches: (pathname) => pathname === ROUTES.ANALYTICS || pathname.startsWith(`${ROUTES.ANALYTICS}/`),
+    allowedRoles: ['SYSTEM_ADMIN', 'MEDICATION_MANAGER', 'VIEWER'],
+  },
+  {
+    matches: (pathname) => pathname === ROUTES.DASHBOARD || pathname.startsWith(`${ROUTES.DASHBOARD}/`),
+    allowedRoles: ['SYSTEM_ADMIN', 'MEDICATION_MANAGER', 'VIEWER'],
+  },
 ];
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
@@ -27,9 +48,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const isLoading = useAuthStore((state) => state.isLoading);
   const isHydrated = useAuthStore((state) => state.isHydrated);
   const userRole = user?.role as RoleType | undefined;
-  const currentGuard = ROLE_GUARDS.find(
-    (guard) => pathname === guard.prefix || pathname.startsWith(`${guard.prefix}/`)
-  );
+  const currentGuard = ROLE_GUARDS.find((guard) => guard.matches(pathname));
   const isForbidden = !!currentGuard && !!userRole && !currentGuard.allowedRoles.includes(userRole);
 
   useEffect(() => {

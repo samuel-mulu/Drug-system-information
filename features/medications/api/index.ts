@@ -1,6 +1,6 @@
 import { api } from '../../../lib/api-client';
 import { 
-  Medication, 
+  MedicationListItem,
   CreateMedicationInput, 
   UpdateMedicationInput, 
   ChangeMedicationStatusInput,
@@ -35,7 +35,7 @@ function buildMedicationQuery(filters: MedicationFilters = {}) {
 
 export const medicationsApi = {
   list: (filters: MedicationFilters = {}) =>
-    api.get<PaginatedResponse<Medication>>(buildMedicationQuery(filters)),
+    api.get<PaginatedResponse<MedicationListItem>>(buildMedicationQuery(filters)),
   
   get: (id: string) => 
     api.get<MedicationResponse>(`/api/medications/${id}`),

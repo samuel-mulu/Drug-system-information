@@ -18,34 +18,29 @@ export interface Location {
 export interface UserInfo {
   id: string;
   fullName: string;
-  email: string;
 }
 
-export interface Medication {
+export interface MedicationListItem {
   id: string;
-  code: string;
   genericName: string;
-  brandName: string;
   strength: string;
   dosageForm: string;
-  category: string;
-  manufacturer: string;
-  description?: string;
   status: MedicationStatus;
-  locationId: string;
-  location: Location;
-  createdById: string;
-  createdBy: UserInfo;
-  updatedById: string;
-  updatedBy: UserInfo;
-  createdAt: string;
   updatedAt: string;
+  location: Pick<Location, 'id' | 'name'>;
 }
 
-export interface MedicationListResponse extends PaginatedResponse<Medication> {}
+export interface MedicationDetail extends MedicationListItem {
+  locationId: string;
+  createdBy: UserInfo;
+  updatedBy: UserInfo;
+  createdAt: string;
+}
+
+export interface MedicationListResponse extends PaginatedResponse<MedicationListItem> {}
 
 export interface MedicationResponse {
-  data: Medication;
+  data: MedicationDetail;
 }
 
 export interface StatusHistoryResponse {
@@ -64,27 +59,17 @@ export interface StatusHistoryRecord {
 }
 
 export interface CreateMedicationInput {
-  code: string;
   genericName: string;
-  brandName: string;
   strength: string;
   dosageForm: string;
-  category: string;
-  manufacturer: string;
-  description?: string;
   locationId: string;
   status?: MedicationStatus;
 }
 
 export interface UpdateMedicationInput {
-  code?: string;
   genericName?: string;
-  brandName?: string;
   strength?: string;
   dosageForm?: string;
-  category?: string;
-  manufacturer?: string;
-  description?: string;
   locationId?: string;
 }
 

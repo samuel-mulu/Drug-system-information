@@ -1,8 +1,10 @@
+import type { RoleName } from '@/features/users/types';
+
 export interface CurrentUser {
   id: string;
   fullName: string;
   email: string;
-  role: string;
+  role: RoleName;
   isActive: boolean;
   departmentId?: string | null;
   departmentName?: string | null;

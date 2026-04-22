@@ -3,8 +3,8 @@ import { Providers } from './providers';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Drug Information System',
-  description: 'Centralized Drug Information and Availability Management System',
+  title: 'SUHUL HOSPITAL DRUG INFORMATION SYSTEM',
+  description: 'SUHUL HOSPITAL Drug Information System for medication visibility, stock status tracking, and safe pharmacy operations.',
 };
 
 export default function RootLayout({

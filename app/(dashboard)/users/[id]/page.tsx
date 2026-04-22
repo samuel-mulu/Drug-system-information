@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import { PageHeader } from '../../../../components/ui/page-header';
 import { Button } from '../../../../components/ui/button';
 import { Card, CardContent, CardHeader } from '../../../../components/ui/card';
@@ -8,20 +9,19 @@ import LoadingState from '../../../../components/ui/loading-state';
 import { useUser, useActivateUser, useDeactivateUser } from '../../../../features/users/hooks';
 import UserStatusAction from '../../../../features/users/components/user-status-action';
 import ErrorState from '../../../../components/ui/error-state';
+import { getApiErrorMessage } from '@/lib/api-client';
 
 export default function UserDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { data: userData, isLoading, error } = useUser(params.id);
+  const { data: user, isLoading, error } = useUser(params.id);
   const activateUser = useActivateUser(params.id);
   const deactivateUser = useDeactivateUser(params.id);
-
-  const user = userData?.data;
 
   const handleActivate = async () => {
     try {
       await activateUser.mutateAsync();
     } catch (error) {
-      console.error('Failed to activate user:', error);
+      toast.error(getApiErrorMessage(error, 'Failed to activate user'));
     }
   };
 
@@ -29,7 +29,7 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
     try {
       await deactivateUser.mutateAsync();
     } catch (error) {
-      console.error('Failed to deactivate user:', error);
+      toast.error(getApiErrorMessage(error, 'Failed to deactivate user'));
     }
   };
 
@@ -85,6 +85,12 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
             <div>
               <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Role</p>
               <p className="mt-1 text-sm font-semibold text-slate-900">{user.role.name.replace('_', ' ')}</p>
+            </div>
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Department / Location</p>
+              <p className="mt-1 text-sm font-semibold text-slate-900">
+                {user.department?.name || (user.role.name === 'MEDICATION_MANAGER' ? 'Not assigned' : '-')}
+              </p>
             </div>
             <div>
               <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Status</p>

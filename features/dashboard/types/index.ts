@@ -9,8 +9,8 @@ export interface RecentStatusChange {
   id: string;
   medication: {
     id: string;
-    code: string;
-    genericName: string;
+    strength: string;
+    dosageForm: string;
   };
   oldStatus: string;
   newStatus: string;
@@ -24,8 +24,8 @@ export interface RecentStatusChange {
 
 export interface OutOfStockInsightItem {
   id: string;
-  code: string;
-  genericName: string;
+  strength: string;
+  dosageForm: string;
   location: {
     id: string;
     name: string;
@@ -34,8 +34,8 @@ export interface OutOfStockInsightItem {
 
 export interface MostFrequentlyOutOfStock {
   medicationId: string;
-  code: string;
-  genericName: string;
+  strength: string;
+  dosageForm: string;
   outOfStockChangeCount: number;
 }
 
@@ -51,8 +51,18 @@ export interface OutOfStockInsights {
   statusBreakdown: StatusBreakdown;
 }
 
+export interface DashboardOverview {
+  summary: DashboardSummary;
+  recentStatusChanges: RecentStatusChange[];
+  outOfStockInsights: OutOfStockInsights;
+}
+
 export interface DashboardSummaryResponse {
   data: DashboardSummary;
+}
+
+export interface DashboardOverviewResponse {
+  data: DashboardOverview;
 }
 
 export interface OutOfStockInsightsResponse {

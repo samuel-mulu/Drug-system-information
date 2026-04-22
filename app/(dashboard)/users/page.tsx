@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUsers } from '@/features/users/hooks';
-import { RoleName, User } from '@/features/users/types';
+import { RoleName, UserListItem } from '@/features/users/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -19,7 +19,7 @@ export default function UsersPage() {
   const [page, setPage] = useState(1);
   const debouncedSearch = useDebouncedValue(search, 300);
 
-  const { data, isLoading } = useUsers({
+  const { data, isLoading, isFetching } = useUsers({
     search: debouncedSearch || undefined,
     role: roleFilter || undefined,
     isActive: isActiveFilter === '' ? undefined : isActiveFilter,
@@ -31,7 +31,7 @@ export default function UsersPage() {
   const total = data?.meta?.total || 0;
   const totalPages = Math.ceil(total / 10);
 
-  const columns: Column<User>[] = [
+  const columns: Column<UserListItem>[] = [
     { header: 'Full Name', accessor: 'fullName' },
     { header: 'Email', accessor: 'email' },
     { 
@@ -39,6 +39,13 @@ export default function UsersPage() {
       accessor: (user) => (
         <span className="capitalize">{user.role.name.toLowerCase().replace('_', ' ')}</span>
       ) 
+    },
+    {
+      header: 'Department / Location',
+      accessor: (user) =>
+        user.department?.name ||
+        user.departmentId ||
+        (user.role.name === 'MEDICATION_MANAGER' ? 'Not assigned' : '-'),
     },
     { 
       header: 'Status', 
@@ -84,7 +91,10 @@ export default function UsersPage() {
                 <Input
                   placeholder="Search by name or email..."
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(1);
+                  }}
                 />
               </div>
 
@@ -92,7 +102,10 @@ export default function UsersPage() {
                 <label className="mb-1.5 block text-sm font-medium text-slate-700">Role</label>
                 <select
                   value={roleFilter}
-                  onChange={(e) => setRoleFilter(e.target.value as RoleName | '')}
+                  onChange={(e) => {
+                    setRoleFilter(e.target.value as RoleName | '');
+                    setPage(1);
+                  }}
                   className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
                   <option value="">All Roles</option>
@@ -106,7 +119,10 @@ export default function UsersPage() {
                 <label className="mb-1.5 block text-sm font-medium text-slate-700">Status</label>
                 <select
                   value={isActiveFilter === '' ? '' : String(isActiveFilter)}
-                  onChange={(e) => setIsActiveFilter(e.target.value === '' ? '' : e.target.value === 'true')}
+                  onChange={(e) => {
+                    setIsActiveFilter(e.target.value === '' ? '' : e.target.value === 'true');
+                    setPage(1);
+                  }}
                   className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
                   <option value="">All Status</option>
@@ -119,6 +135,10 @@ export default function UsersPage() {
                 Reset
               </Button>
             </div>
+
+            {isFetching && !isLoading ? (
+              <p className="mb-4 text-sm text-slate-500">Updating users...</p>
+            ) : null}
 
             <DataTable
               columns={columns}

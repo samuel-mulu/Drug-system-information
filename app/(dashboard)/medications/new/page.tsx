@@ -12,16 +12,12 @@ import { useCurrentUser } from '../../../../features/auth/hooks/useCurrentUser';
 export default function NewMedicationPage() {
   const router = useRouter();
   const createMedication = useCreateMedication();
-  const { data: locationsData, isLoading: locationsLoading } = useLocations();
+  const { data: locations = [], isLoading: locationsLoading } = useLocations();
   const { data: currentUser, isLoading: userLoading } = useCurrentUser();
 
   const handleSubmit = async (data: CreateMedicationInput) => {
-    try {
-      await createMedication.mutateAsync(data);
-      router.push('/medications');
-    } catch (error) {
-      console.error('Failed to create medication:', error);
-    }
+    await createMedication.mutateAsync(data);
+    router.push('/medications');
   };
 
   if (locationsLoading || userLoading) {
@@ -42,7 +38,7 @@ export default function NewMedicationPage() {
         mode="create"
         onSubmit={handleSubmit}
         loading={createMedication.isPending}
-        availableLocations={locationsData?.data || []}
+        availableLocations={locations}
         currentUser={currentUser}
       />
     </div>

@@ -1,4 +1,4 @@
-export const APP_NAME = 'Drug Info System';
+export const APP_NAME = 'SUHUL HOSPITAL DRUG INFORMATION SYSTEM';
 
 export const ROUTES = {
   LOGIN: '/login',
@@ -19,7 +19,7 @@ export type RoleType = 'SYSTEM_ADMIN' | 'MEDICATION_MANAGER' | 'VIEWER';
 
 export const SIDEBAR_NAV_ITEMS = [
   { label: 'Dashboard', href: ROUTES.DASHBOARD, allowedRoles: ['SYSTEM_ADMIN', 'MEDICATION_MANAGER', 'VIEWER'] as RoleType[] },
-  { label: 'Medications', href: ROUTES.MEDICATIONS, allowedRoles: ['SYSTEM_ADMIN', 'MEDICATION_MANAGER'] as RoleType[] },
+  { label: 'Medications', href: ROUTES.MEDICATIONS, allowedRoles: ['SYSTEM_ADMIN', 'MEDICATION_MANAGER', 'VIEWER'] as RoleType[] },
   { label: 'Users', href: ROUTES.USERS, allowedRoles: ['SYSTEM_ADMIN'] as RoleType[] },
   { label: 'Analytics', href: ROUTES.ANALYTICS, allowedRoles: ['SYSTEM_ADMIN', 'MEDICATION_MANAGER', 'VIEWER'] as RoleType[] },
   { label: 'Audit Logs', href: ROUTES.AUDIT_LOGS, allowedRoles: ['SYSTEM_ADMIN'] as RoleType[] },

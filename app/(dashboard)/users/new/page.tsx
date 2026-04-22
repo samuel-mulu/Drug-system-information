@@ -12,11 +12,8 @@ import { useLocations } from '../../../../features/medications/hooks';
 export default function CreateUserPage() {
   const router = useRouter();
   const createUser = useCreateUser();
-  const { data: rolesData, isLoading: rolesLoading } = useRoles();
-  const { data: locationsData, isLoading: locationsLoading } = useLocations();
-
-  const availableRoles = rolesData?.data || [];
-  const availableDepartments = locationsData?.data || [];
+  const { data: availableRoles = [], isLoading: rolesLoading } = useRoles();
+  const { data: availableDepartments = [], isLoading: locationsLoading } = useLocations();
 
   const handleSubmit = async (data: {
     fullName: string;
@@ -25,22 +22,18 @@ export default function CreateUserPage() {
     roleId: string;
     departmentId?: string;
   }) => {
-    try {
-      if (!data.password) {
-        throw new Error('Password is required');
-      }
-
-      await createUser.mutateAsync({
-        fullName: data.fullName,
-        email: data.email,
-        password: data.password,
-        roleId: data.roleId,
-        departmentId: data.departmentId || undefined,
-      });
-      router.push('/users');
-    } catch (error) {
-      console.error('Failed to create user:', error);
+    if (!data.password) {
+      throw new Error('Password is required');
     }
+
+    await createUser.mutateAsync({
+      fullName: data.fullName,
+      email: data.email,
+      password: data.password,
+      roleId: data.roleId,
+      departmentId: data.departmentId || undefined,
+    });
+    router.push('/users');
   };
 
   if (rolesLoading || locationsLoading) {

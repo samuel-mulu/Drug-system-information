@@ -14,14 +14,9 @@ import toast from 'react-hot-toast';
 import { CurrentUser } from '@/features/auth/types';
 
 const medicationSchema = z.object({
-  code: z.string().min(1, 'Code is required'),
   genericName: z.string().min(1, 'Generic name is required'),
-  brandName: z.string().min(1, 'Brand name is required'),
   strength: z.string().min(1, 'Strength is required'),
   dosageForm: z.string().min(1, 'Dosage form is required'),
-  category: z.string().min(1, 'Category is required'),
-  manufacturer: z.string().min(1, 'Manufacturer is required'),
-  description: z.string().optional(),
   locationId: z.string().min(1, 'Location is required'),
   status: z.enum(['AVAILABLE', 'OUT_OF_STOCK', 'UNAVAILABLE'] as const),
 });
@@ -58,14 +53,9 @@ export default function MedicationForm({
   } = useForm<MedicationFormValues>({
     resolver: zodResolver(medicationSchema),
     defaultValues: {
-      code: initialValues?.code || '',
       genericName: initialValues?.genericName || '',
-      brandName: initialValues?.brandName || '',
       strength: initialValues?.strength || '',
       dosageForm: initialValues?.dosageForm || '',
-      category: initialValues?.category || '',
-      manufacturer: initialValues?.manufacturer || '',
-      description: initialValues?.description || '',
       locationId: initialValues?.locationId || '',
       status: (initialValues?.status as any) || 'AVAILABLE',
     },
@@ -105,17 +95,6 @@ export default function MedicationForm({
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-semibold">Code *</label>
-              <Input
-                {...register('code')}
-                placeholder="MED-001"
-                disabled={isFormLoading}
-                error={!!errors.code}
-              />
-              {errors.code && <p className="text-xs text-danger">{errors.code.message}</p>}
-            </div>
-
-            <div className="space-y-2">
               <label className="text-sm font-semibold">Generic Name *</label>
               <Input
                 {...register('genericName')}
@@ -124,17 +103,6 @@ export default function MedicationForm({
                 error={!!errors.genericName}
               />
               {errors.genericName && <p className="text-xs text-danger">{errors.genericName.message}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-semibold">Brand Name *</label>
-              <Input
-                {...register('brandName')}
-                placeholder="Panadol"
-                disabled={isFormLoading}
-                error={!!errors.brandName}
-              />
-              {errors.brandName && <p className="text-xs text-danger">{errors.brandName.message}</p>}
             </div>
 
             <div className="space-y-2">
@@ -160,28 +128,6 @@ export default function MedicationForm({
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold">Category *</label>
-              <Input
-                {...register('category')}
-                placeholder="Analgesic"
-                disabled={isFormLoading}
-                error={!!errors.category}
-              />
-              {errors.category && <p className="text-xs text-danger">{errors.category.message}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-semibold">Manufacturer *</label>
-              <Input
-                {...register('manufacturer')}
-                placeholder="GSK"
-                disabled={isFormLoading}
-                error={!!errors.manufacturer}
-              />
-              {errors.manufacturer && <p className="text-xs text-danger">{errors.manufacturer.message}</p>}
-            </div>
-
-            <div className="space-y-2">
               <label className="text-sm font-semibold">Location *</label>
               <select
                 {...register('locationId')}
@@ -200,15 +146,6 @@ export default function MedicationForm({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold">Description</label>
-            <Input
-              {...register('description')}
-              placeholder="Optional description"
-              disabled={isFormLoading}
-            />
-          </div>
-
-          <div className="space-y-2">
             <label className="text-sm font-semibold">Status</label>
             <select
               {...register('status')}
@@ -216,8 +153,8 @@ export default function MedicationForm({
               disabled={isFormLoading}
             >
               <option value="AVAILABLE">Available</option>
-              <option value="OUT_OF_STOCK">Out of Stock</option>
-              <option value="UNAVAILABLE">Unavailable</option>
+              <option value="OUT_OF_STOCK">NEAR STOCK OUT</option>
+              <option value="UNAVAILABLE">STOCK OUT</option>
             </select>
           </div>
 
