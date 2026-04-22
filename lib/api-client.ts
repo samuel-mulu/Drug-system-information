@@ -1,5 +1,4 @@
-const rawApiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
-const API_BASE_URL = (rawApiBaseUrl || 'http://localhost:3001').replace(/\/+$/, '');
+const API_BASE_URL = '';
 
 interface ApiErrorPayload {
   message?: string;
