@@ -110,7 +110,7 @@ export default function MedicationDetailPage({ params }: { params: { id: string 
           <CardContent>
             <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
               {infoItems.map((item, index) => (
-                <div key={index} className={item.fullWidth ? 'sm:col-span-2' : ''}>
+                <div key={index}>
                   <dt className="text-sm font-medium text-slate-500">{item.label}</dt>
                   <dd className="mt-1 text-sm font-semibold text-slate-900">{item.value}</dd>
                 </div>
