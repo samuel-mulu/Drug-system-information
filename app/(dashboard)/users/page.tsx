@@ -11,6 +11,22 @@ import DataTable, { Column } from '@/components/ui/data-table';
 import { PageHeader } from '@/components/ui/page-header';
 import { useDebouncedValue } from '@/lib/debounce';
 
+function getDepartmentDisplay(user: UserListItem) {
+  if (user.departments.length > 0) {
+    return user.departments.map((department) => department.name).join(', ');
+  }
+
+  if (user.department?.name) {
+    return user.department.name;
+  }
+
+  if (user.departmentId) {
+    return user.departmentId;
+  }
+
+  return user.role.name === 'SYSTEM_ADMIN' ? '-' : 'Not assigned';
+}
+
 export default function UsersPage() {
   const router = useRouter();
   const [search, setSearch] = useState('');
@@ -42,10 +58,7 @@ export default function UsersPage() {
     },
     {
       header: 'Department / Location',
-      accessor: (user) =>
-        user.department?.name ||
-        user.departmentId ||
-        (user.role.name === 'MEDICATION_MANAGER' ? 'Not assigned' : '-'),
+      accessor: (user) => getDepartmentDisplay(user),
     },
     { 
       header: 'Status', 

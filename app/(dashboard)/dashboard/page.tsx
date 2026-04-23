@@ -16,6 +16,7 @@ export default function DashboardPage() {
   const { data: currentUser } = useCurrentUser();
   const { data: locations = [] } = useLocations();
   const isManager = currentUser?.role === 'MEDICATION_MANAGER';
+  const isViewer = currentUser?.role === 'VIEWER';
   const managerDepartmentId = currentUser?.departmentId || '';
   const effectiveLocationFilter = isManager ? managerDepartmentId || undefined : locationFilter || undefined;
 
@@ -52,7 +53,7 @@ export default function DashboardPage() {
               className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               disabled={isManager || locations.length === 0}
             >
-              {!isManager && <option value="">All Departments</option>}
+              {!isManager && <option value="">{isViewer ? 'Assigned Departments' : 'All Departments'}</option>}
               {locations.map((location) => (
                 <option key={location.id} value={location.id}>
                   {location.name}

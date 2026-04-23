@@ -6,6 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/features/auth/store/auth-store';
 import { authApi } from '@/features/auth/api';
 import { AppShell } from '@/components/layout/app-shell';
+import { Button } from '@/components/ui/button';
 import LoadingState from '@/components/ui/loading-state';
 import { ROUTES, SIDEBAR_NAV_ITEMS, RoleType } from '@/lib/constants';
 
@@ -47,6 +48,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const hydrate = useAuthStore((state) => state.hydrate);
   const isLoading = useAuthStore((state) => state.isLoading);
   const isHydrated = useAuthStore((state) => state.isHydrated);
+  const hydrateError = useAuthStore((state) => state.hydrateError);
   const userRole = user?.role as RoleType | undefined;
   const currentGuard = ROLE_GUARDS.find((guard) => guard.matches(pathname));
   const isForbidden = !!currentGuard && !!userRole && !currentGuard.allowedRoles.includes(userRole);
@@ -56,10 +58,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   }, [hydrate]);
 
   useEffect(() => {
-    if (isHydrated && !isLoading && !user) {
+    if (isHydrated && !isLoading && !user && !hydrateError) {
       router.replace('/login');
     }
-  }, [isHydrated, isLoading, user, router]);
+  }, [hydrateError, isHydrated, isLoading, user, router]);
 
   useEffect(() => {
     if (isHydrated && !isLoading && isForbidden) {
@@ -67,10 +69,32 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     }
   }, [isForbidden, isHydrated, isLoading, router]);
 
-  if (!isHydrated || isLoading || !user) {
+  if (!isHydrated || isLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-50">
         <LoadingState message="Loading..." />
+      </div>
+    );
+  }
+
+  if (!user && hydrateError) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-slate-50 px-4">
+        <div className="w-full max-w-md rounded-xl border border-[#dbe7f2] bg-white p-6 text-center shadow-sm">
+          <p className="text-base font-semibold text-slate-800">Session check failed</p>
+          <p className="mt-2 text-sm text-slate-600">{hydrateError}</p>
+          <Button className="mt-5 w-full" onClick={() => void hydrate()}>
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-slate-50">
+        <LoadingState message="Redirecting..." />
       </div>
     );
   }

@@ -10,6 +10,19 @@ import { useUser, useActivateUser, useDeactivateUser } from '../../../../feature
 import UserStatusAction from '../../../../features/users/components/user-status-action';
 import ErrorState from '../../../../components/ui/error-state';
 import { getApiErrorMessage } from '@/lib/api-client';
+import { UserDetail } from '@/features/users/types';
+
+function getDepartmentDisplay(user: UserDetail) {
+  if (user.departments.length > 0) {
+    return user.departments.map((department) => department.name).join(', ');
+  }
+
+  if (user.department?.name) {
+    return user.department.name;
+  }
+
+  return user.role.name === 'SYSTEM_ADMIN' ? '-' : 'Not assigned';
+}
 
 export default function UserDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -89,7 +102,7 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
             <div>
               <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Department / Location</p>
               <p className="mt-1 text-sm font-semibold text-slate-900">
-                {user.department?.name || (user.role.name === 'MEDICATION_MANAGER' ? 'Not assigned' : '-')}
+                {getDepartmentDisplay(user)}
               </p>
             </div>
             <div>

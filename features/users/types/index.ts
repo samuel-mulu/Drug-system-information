@@ -6,26 +6,28 @@ export interface Role {
   description?: string;
 }
 
+export interface UserDepartment {
+  id: string;
+  name: string;
+}
+
 export interface UserListItem {
   id: string;
   fullName: string;
   email: string;
   isActive: boolean;
   departmentId?: string | null;
+  departmentIds: string[];
   role: Pick<Role, 'name'>;
-  department?: {
-    id: string;
-    name: string;
-  } | null;
+  department?: UserDepartment | null;
+  departments: UserDepartment[];
   createdAt: string;
 }
 
 export interface UserDetail extends UserListItem {
   departmentId?: string | null;
-  department?: {
-    id: string;
-    name: string;
-  } | null;
+  department?: UserDepartment | null;
+  departments: UserDepartment[];
   role: Role;
   updatedAt: string;
 }
@@ -36,6 +38,7 @@ export interface CreateUserInput {
   password: string;
   roleId: string;
   departmentId?: string;
+  departmentIds?: string[];
 }
 
 export interface UpdateUserInput {
@@ -43,6 +46,7 @@ export interface UpdateUserInput {
   email?: string;
   roleId?: string;
   departmentId?: string | null;
+  departmentIds?: string[];
 }
 
 export interface GetUsersFilters {

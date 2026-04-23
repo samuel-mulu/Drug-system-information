@@ -23,12 +23,14 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
     password?: string;
     roleId: string;
     departmentId?: string;
+    departmentIds: string[];
   }) => {
     await updateUser.mutateAsync({
       fullName: data.fullName,
       email: data.email,
       roleId: data.roleId,
       departmentId: data.departmentId || null,
+      departmentIds: data.departmentIds,
     });
     router.push(`/users/${params.id}`);
   };
@@ -57,6 +59,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
     email: user.email,
     roleId: user.role.id,
     departmentId: user.departmentId || '',
+    departmentIds: user.departmentIds,
   };
 
   return (

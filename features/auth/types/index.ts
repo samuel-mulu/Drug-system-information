@@ -1,5 +1,10 @@
 import type { RoleName } from '@/features/users/types';
 
+export interface CurrentUserDepartment {
+  id: string;
+  name: string;
+}
+
 export interface CurrentUser {
   id: string;
   fullName: string;
@@ -8,6 +13,8 @@ export interface CurrentUser {
   isActive: boolean;
   departmentId?: string | null;
   departmentName?: string | null;
+  departmentIds: string[];
+  departments: CurrentUserDepartment[];
 }
 
 export interface LoginInput {

@@ -21,6 +21,7 @@ export default function CreateUserPage() {
     password?: string;
     roleId: string;
     departmentId?: string;
+    departmentIds: string[];
   }) => {
     if (!data.password) {
       throw new Error('Password is required');
@@ -32,6 +33,7 @@ export default function CreateUserPage() {
       password: data.password,
       roleId: data.roleId,
       departmentId: data.departmentId || undefined,
+      departmentIds: data.departmentIds.length > 0 ? data.departmentIds : undefined,
     });
     router.push('/users');
   };

@@ -241,7 +241,7 @@ export default function MedicationBrowser() {
                 className="flex h-10 w-full rounded-lg border border-input bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
                 disabled={isManager}
               >
-                {!isManager ? <option value="">All Departments</option> : null}
+                {!isManager ? <option value="">{isViewer ? 'Assigned Departments' : 'All Departments'}</option> : null}
                 {locations.map((location) => (
                   <option key={location.id} value={location.id}>
                     {location.name}
