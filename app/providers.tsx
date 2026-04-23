@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { PwaInstallPrompt } from '@/components/pwa/pwa-install-prompt';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,6 +19,7 @@ export function Providers({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       {children}
       <Toaster position="top-right" />
+      <PwaInstallPrompt />
     </QueryClientProvider>
   );
 }

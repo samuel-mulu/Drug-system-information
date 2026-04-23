@@ -1,4 +1,5 @@
 export const APP_NAME = 'SUHUL HOSPITAL DRUG INFORMATION SYSTEM';
+export const APP_SHORT_NAME = 'SUHUL DIS';
 
 export const ROUTES = {
   LOGIN: '/login',
