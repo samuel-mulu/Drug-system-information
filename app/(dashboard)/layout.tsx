@@ -49,6 +49,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const isLoading = useAuthStore((state) => state.isLoading);
   const isHydrated = useAuthStore((state) => state.isHydrated);
   const hydrateError = useAuthStore((state) => state.hydrateError);
+  const needsReauth = useAuthStore((state) => state.needsReauth);
   const userRole = user?.role as RoleType | undefined;
   const currentGuard = ROLE_GUARDS.find((guard) => guard.matches(pathname));
   const isForbidden = !!currentGuard && !!userRole && !currentGuard.allowedRoles.includes(userRole);
@@ -59,9 +60,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (isHydrated && !isLoading && !user && !hydrateError) {
-      router.replace('/login');
+      queryClient.clear();
+      router.replace(needsReauth ? '/login?reason=session-expired&reauth=1' : '/login');
     }
-  }, [hydrateError, isHydrated, isLoading, user, router]);
+  }, [hydrateError, isHydrated, isLoading, needsReauth, queryClient, router, user]);
 
   useEffect(() => {
     if (isHydrated && !isLoading && isForbidden) {

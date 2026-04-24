@@ -5,6 +5,7 @@ import { AUTH_COOKIE_NAME, PROTECTED_PATH_PREFIXES } from './lib/auth';
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
+  const allowReauth = request.nextUrl.searchParams.get('reauth') === '1';
   const isProtectedRoute = PROTECTED_PATH_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
   );
@@ -14,7 +15,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  if (isLoginRoute && token) {
+  if (isLoginRoute && token && !allowReauth) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
